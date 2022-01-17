@@ -5,7 +5,7 @@ class HkController {
       const MethodChannel('flutter_hk/controller');
   int iUserId = -1;
   final String name;
-  MethodChannel _channel = null;
+  MethodChannel? _channel = null;
   bool isInit = false;
 
   HkController(this.name);
@@ -27,7 +27,7 @@ class HkController {
   }
 
   Future<int> login(String ip, int port, String user, String psd) async {
-    iUserId = await _channel.invokeMethod("login", {
+    iUserId = await _channel?.invokeMethod("login", {
       "ip": ip,
       "port": port,
       "user": user,
@@ -37,13 +37,13 @@ class HkController {
   }
 
   Future getChans() async {
-    var result = await _channel.invokeMapMethod("getChans");
+    var result = await _channel?.invokeMapMethod("getChans");
     return result;
   }
 
   Future logout() async {
     iUserId = -1;
-    await _channel.invokeMethod("logout");
+    await _channel?.invokeMethod("logout");
   }
 
   void dispose() {

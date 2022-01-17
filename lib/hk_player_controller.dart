@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'hk_controller.dart';
 
 class HkPlayerController {
-  MethodChannel _channel;
+  MethodChannel? _channel;
   bool hasClients = false;
   HkController hkController;
   int iChan = -1;
@@ -24,20 +24,20 @@ class HkPlayerController {
       Future.error("请先登录");
       return;
     }
-    await _channel.invokeMethod(
+    await _channel?.invokeMethod(
         "play", {"iUserID": this.hkController.iUserId, "iChan": iChan});
     print("playend");
     isPlaying = true;
   }
 
-  Future replay() {
+  Future replay() async {
     if (this.iChan != -1) {
       play(this.iChan);
     }
   }
 
   Future stop() async {
-    await _channel.invokeMethod("stop");
+    await _channel?.invokeMethod("stop");
     isPlaying = false;
   }
 

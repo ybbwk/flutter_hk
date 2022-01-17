@@ -12,9 +12,9 @@ class HkPlayer extends StatefulWidget {
   int chan = -1;
   HkPlayerController controller;
   HkPlayer({
-    Key key,
-    @required this.chan,
-    @required this.controller,
+    Key? key,
+    required this.chan,
+    required this.controller,
   });
 
   @override
@@ -22,7 +22,7 @@ class HkPlayer extends StatefulWidget {
 }
 
 class HkPlayerState extends State<HkPlayer> {
-  HkPlayerController _controller;
+  HkPlayerController? _controller;
   bool readyToShow = false;
 
   @override
@@ -38,10 +38,10 @@ class HkPlayerState extends State<HkPlayer> {
         child: _createPlatformView(),
       ),
       onDoubleTap: () {
-        if (this._controller.isPlaying)
-          this._controller.stop();
+        if (this._controller?.isPlaying ?? false)
+          this._controller?.stop();
         else
-          this._controller.replay();
+          this._controller?.replay();
       },
     );
   }
@@ -62,7 +62,7 @@ class HkPlayerState extends State<HkPlayer> {
 
   void _onPlatformViewCreated(int id) async {
     _controller = widget.controller;
-    _controller.initView(id);
+    _controller!.initView(id);
     setState(() {
       readyToShow = true;
     });
@@ -70,7 +70,7 @@ class HkPlayerState extends State<HkPlayer> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 }

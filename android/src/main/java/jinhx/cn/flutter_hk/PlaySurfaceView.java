@@ -26,8 +26,7 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
     public boolean bCreate = false;
 
 
-    public PlaySurfaceView(Context context, BinaryMessenger messenger, int id)
-    {
+    public PlaySurfaceView(Context context, BinaryMessenger messenger, int id) {
         super(context);
         // TODO Auto-generated constructor stub
         getHolder().addCallback(this);
@@ -48,44 +47,33 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
 
 
     @Override
-    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3)
-    {
-        // TODO Auto-generated method stub
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         System.out.println("surfaceChanged");
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder arg0)
-    {
+    public void surfaceCreated(SurfaceHolder arg0) {
         // TODO Auto-generated method stub
         bCreate = true;
         System.out.println("surfaceCreated");
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder arg0)
-    {
+    public void surfaceDestroyed(SurfaceHolder arg0) {
         // TODO Auto-generated method stub
         System.out.println("surfaceDestroyed");
         bCreate = false;
-
     }
 
-    public void startPreview(int iUserID, int iChan)
-    {
+    public void startPreview(int iUserID, int iChan) {
         Log.i(TAG, "preview channel:" + iChan);
-        while (!bCreate)
-        {
-            try
-            {
+        while (!bCreate) {
+            try {
                 Thread.sleep(100);
                 Log.i(TAG, "wait for surface create");
-            }
-            catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -97,8 +85,7 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
 
         // HCNetSDK start preview
         m_iPreviewHandle = HCNetSDK.getInstance().NET_DVR_RealPlay_V40(iUserID, previewInfo, null);
-        if (m_iPreviewHandle < 0)
-        {
+        if (m_iPreviewHandle < 0) {
             Log.e(TAG, "NET_DVR_RealPlay is failed!Err:" + HCNetSDK.getInstance().NET_DVR_GetLastError());
             return;
         }
@@ -106,15 +93,14 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
         Log.i(TAG, "NET_DVR_RealPlay is success");
     }
 
-    public void stopPreview()
-    {
+    public void stopPreview() {
         HCNetSDK.getInstance().NET_DVR_StopRealPlay(m_iPreviewHandle);
         this.isPlaying = false;
     }
 
     @Override
     public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-        switch (methodCall.method){
+        switch (methodCall.method) {
             case "play":
                 Log.i(TAG, "play");
                 int iUserID = methodCall.argument("iUserID");

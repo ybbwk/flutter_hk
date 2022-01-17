@@ -29,25 +29,25 @@ public class FlutterHkPlugin implements MethodCallHandler {
   }
 
   @Override
-  protected void finalize(){
+  protected void finalize() {
     Log.e("FlutterHkPlugin", "-FlutterHkPlugin finalize");
   }
 
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     Log.e("Controller", call.method);
-    switch (call.method){
+    switch (call.method) {
       case "getPlatformVersion":
         Log.e("FP", String.valueOf(_channels.size()));
         result.success("Android " + android.os.Build.VERSION.RELEASE);
         break;
       case "createController":
-        if(!_isInit){
+        if (!_isInit) {
           HCNetSDK.getInstance().NET_DVR_Init();
           _isInit = true;
         }
         String name = call.argument("name");
-        if(!_channels.containsKey(name)) {
+        if (!_channels.containsKey(name)) {
           _channels.put(name, new HkController(name, this.messenger));
         }
         result.success(true);

@@ -24,22 +24,22 @@ public class HkController implements MethodChannel.MethodCallHandler {
     private int m_iChanNum = 0;
     private String name;
 
-    HkController(String name, BinaryMessenger messenger){
+    HkController(String name, BinaryMessenger messenger) {
         this.name = name;
         channel = new MethodChannel(messenger, "flutter_hk/controller_" + name);
         channel.setMethodCallHandler(this);
-        Log.e(TAG, "HkController:"+name);
+        Log.e(TAG, "HkController:" + name);
     }
 
     @Override
-    protected void finalize(){
-        Log.e(TAG, "-HkController:"+name);
+    protected void finalize() {
+        Log.e(TAG, "-HkController:" + name);
     }
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.e("ctrl1", call.method);
-        switch (call.method){
+        switch (call.method) {
             case "login":
                 String ip = call.argument("ip");
                 int port = call.argument("port");
@@ -48,7 +48,7 @@ public class HkController implements MethodChannel.MethodCallHandler {
                 try {
                     int iUserID = this.login(ip, port, user, psd);
                     result.success(iUserID);
-                }catch (Exception err){
+                } catch (Exception err) {
                     result.error("ERR", err.getMessage(), null);
                 }
                 break;
@@ -66,58 +66,47 @@ public class HkController implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private int login(String ip, int port, String user, String psd)throws Exception{
+    private int login(String ip, int port, String user, String psd) throws Exception {
         try {
             // login on the device
             m_iLogID = loginDevice(ip, port, user, psd);
-            if (m_iLogID < 0)
-            {
+            if (m_iLogID < 0) {
                 Log.e(TAG, "This device logins failed!");
                 throw new Exception("This device logins failed!");
-            }
-            else
-            {
+            } else {
                 Log.i(TAG, "m_iLogID=" + m_iLogID);
             }
             // get instance of exception callback and set
             ExceptionCallBack oexceptionCbf = getExceptiongCbf();
-            if (oexceptionCbf == null)
-            {
+            if (oexceptionCbf == null) {
                 Log.e(TAG, "ExceptionCallBack object is failed!");
                 throw new Exception("ExceptionCallBack object is failed!");
             }
 
-            if (!HCNetSDK.getInstance().NET_DVR_SetExceptionCallBack(oexceptionCbf))
-            {
+            if (!HCNetSDK.getInstance().NET_DVR_SetExceptionCallBack(oexceptionCbf)) {
                 Log.e(TAG, "NET_DVR_SetExceptionCallBack is failed!");
                 throw new Exception("ExceptionCallBack object is failed!");
             }
-
             Log.i(TAG, "Login sucess");
             return m_iLogID;
-
-        }
-        catch (Exception err)
-        {
+        } catch (Exception err) {
             Log.e(TAG, "error: " + err.toString());
             throw err;
         }
     }
 
-    private boolean logout(){
-        try{
-            if (this.m_iLogID >= 0 && !HCNetSDK.getInstance().NET_DVR_Logout_V30(m_iLogID))
-            {
+    private boolean logout() {
+        try {
+            if (this.m_iLogID >= 0 && !HCNetSDK.getInstance().NET_DVR_Logout_V30(m_iLogID)) {
                 Log.e(TAG, " NET_DVR_Logout is failed!");
                 //if (!HCNetSDKJNAInstance.getInstance().NET_DVR_DeleteOpenEzvizUser(m_iLogID)) {
                 //		Log.e(TAG, " NET_DVR_DeleteOpenEzvizUser is failed!");
                 return false;
             }
-            Log.e(TAG, " NET_DVR_Logout is success!"+this.m_iLogID);
+            Log.e(TAG, " NET_DVR_Logout is success!" + this.m_iLogID);
             m_iLogID = -1;
             return true;
-        }catch (Exception err)
-        {
+        } catch (Exception err) {
             Log.e(TAG, "error: " + err.toString());
             throw err;
         }
@@ -129,12 +118,10 @@ public class HkController implements MethodChannel.MethodCallHandler {
      * @brief login on device
      * @return login ID
      */
-    private int loginDevice(String ip, int port, String user, String psd)throws Exception
-    {
+    private int loginDevice(String ip, int port, String user, String psd) throws Exception {
         int iLogID = -1;
         NET_DVR_DEVICEINFO_V30 m_oNetDvrDeviceInfoV30 = new NET_DVR_DEVICEINFO_V30();
-        if (null == m_oNetDvrDeviceInfoV30)
-        {
+        if (null == m_oNetDvrDeviceInfoV30) {
             Log.e(TAG, "HKNetDvrDeviceInfoV30 new is failed!");
             throw new Exception("HKNetDvrDeviceInfoV30 new is failed!");
         }
@@ -145,20 +132,17 @@ public class HkController implements MethodChannel.MethodCallHandler {
 
         // call NET_DVR_Login_v30 to login on, port 8000 as default
         iLogID = HCNetSDK.getInstance().NET_DVR_Login_V30(strIP, nPort, strUser, strPsd, m_oNetDvrDeviceInfoV30);
-        if (iLogID < 0)
-        {
+        if (iLogID < 0) {
             int ret = getLastError();
             Log.e(TAG, "NET_DVR_Login is failed!Err:" + ret);
             throw new Exception("NET_DVR_Login is failed!Err:" + ret);
         }
 
-        if (m_oNetDvrDeviceInfoV30.byChanNum > 0)
-        {
+        if (m_oNetDvrDeviceInfoV30.byChanNum > 0) {
             m_iStartChan = m_oNetDvrDeviceInfoV30.byStartChan;
             m_iChanNum = m_oNetDvrDeviceInfoV30.byChanNum;
         }
-        else if (m_oNetDvrDeviceInfoV30.byIPChanNum > 0)
-        {
+        else if (m_oNetDvrDeviceInfoV30.byIPChanNum > 0) {
             m_iStartChan = m_oNetDvrDeviceInfoV30.byStartDChan;
             m_iChanNum = m_oNetDvrDeviceInfoV30.byIPChanNum + m_oNetDvrDeviceInfoV30.byHighDChanNum * 256;
         }
@@ -167,15 +151,15 @@ public class HkController implements MethodChannel.MethodCallHandler {
         return iLogID;
     }
 
-    private Map<Object,Object> getChans(){
+    private Map<Object,Object> getChans() {
         Log.i(TAG, "getChans is starting!");
         NET_DVR_PICCFG_V30 net_dvr_piccfg_v30 = new NET_DVR_PICCFG_V30();
         Map<Object,Object> chans = new HashMap<>();
-        for (int i = this.m_iStartChan; i<this.m_iStartChan+this.m_iChanNum;i++){
-            if(HCNetSDK.getInstance().NET_DVR_GetDVRConfig(this.m_iLogID, HCNetSDK.NET_DVR_GET_PICCFG_V30, i, net_dvr_piccfg_v30)){
-                try{
-                chans.put(i, new String(net_dvr_piccfg_v30.sChanName, "GBK"));
-                }catch(UnsupportedEncodingException ex){
+        for (int i = this.m_iStartChan; i < this.m_iStartChan+this.m_iChanNum; i++) {
+            if (HCNetSDK.getInstance().NET_DVR_GetDVRConfig(this.m_iLogID, HCNetSDK.NET_DVR_GET_PICCFG_V30, i, net_dvr_piccfg_v30)) {
+                try {
+                    chans.put(i, new String(net_dvr_piccfg_v30.sChanName, "GBK"));
+                } catch(UnsupportedEncodingException ex) {
                     continue;
                 }
             }
@@ -191,12 +175,9 @@ public class HkController implements MethodChannel.MethodCallHandler {
      * @brief process exception
      * @return exception instance
      */
-    private ExceptionCallBack getExceptiongCbf()
-    {
-        ExceptionCallBack oExceptionCbf = new ExceptionCallBack()
-        {
-            public void fExceptionCallBack(int iType, int iUserID, int iHandle)
-            {
+    private ExceptionCallBack getExceptiongCbf() {
+        ExceptionCallBack oExceptionCbf = new ExceptionCallBack() {
+            public void fExceptionCallBack(int iType, int iUserID, int iHandle) {
                 System.out.println("recv exception, type:" + iType);
             }
         };
@@ -207,7 +188,7 @@ public class HkController implements MethodChannel.MethodCallHandler {
      *
      * @return err的-值
      */
-    private int getLastError(){
+    private int getLastError() {
         return -HCNetSDK.getInstance().NET_DVR_GetLastError();
     }
 }

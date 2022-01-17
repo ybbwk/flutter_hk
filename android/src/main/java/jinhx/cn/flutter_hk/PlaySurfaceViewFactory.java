@@ -14,6 +14,7 @@ public class PlaySurfaceViewFactory extends PlatformViewFactory {
         super(StandardMessageCodec.INSTANCE);
         this.messenger = messenger;
     }
+    
     @Override
     public PlatformView create(Context context, int i, Object o) {
         return new PlaySurfaceView(context, messenger, i);
