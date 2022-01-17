@@ -28,7 +28,6 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
 
     public PlaySurfaceView(Context context, BinaryMessenger messenger, int id) {
         super(context);
-        // TODO Auto-generated constructor stub
         getHolder().addCallback(this);
 
         channel = new MethodChannel(messenger, "flutter_hk/player_" + id);
@@ -44,7 +43,6 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
     public void dispose() {
         this.stopPreview();
     }
-
 
     @Override
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {

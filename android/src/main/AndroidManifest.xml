@@ -2,7 +2,7 @@
   package="jinhx.cn.flutter_hk">
   <!-- <application
     android:label="flutter_hk"
-    android:name="${applicationName}">
+    android:name="flutter_hk">
     <meta-data
       android:name="flutterEmbedding"
       android:value="2" />

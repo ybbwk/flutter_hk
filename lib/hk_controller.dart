@@ -5,7 +5,7 @@ class HkController {
       const MethodChannel('flutter_hk/controller');
   int iUserId = -1;
   final String name;
-  MethodChannel? _channel = null;
+  MethodChannel? _channel;
   bool isInit = false;
 
   HkController(this.name);
