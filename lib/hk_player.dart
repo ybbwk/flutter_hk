@@ -13,7 +13,7 @@ class HkPlayer extends StatefulWidget {
   HkPlayerController controller;
   HkPlayer({
     Key? key,
-    required this.chan,
+    this.chan = -1,
     required this.controller,
   });
 
