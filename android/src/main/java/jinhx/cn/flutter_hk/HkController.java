@@ -57,7 +57,7 @@ public class HkController implements MethodChannel.MethodCallHandler {
                 result.success(true);
                 break;
             case "getChans":
-                Map<Object,Object> ret = this.getChans();
+                Map<Object, Object> ret = this.getChans();
                 result.success(ret);
                 break;
             default:
