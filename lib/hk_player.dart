@@ -5,15 +5,17 @@ import 'package:flutter/rendering.dart';
 
 import 'hk_player_controller.dart';
 
+const int _kChan = -1;
+
 class HkPlayer extends StatefulWidget {
 //  final int defaultHeight;
 //  final int defaultWidth;
 //  final String url = "";
-  int chan = -1;
+  int chan = _kChan;
   HkPlayerController controller;
   HkPlayer({
     Key? key,
-    this.chan = -1,
+    this.chan = _kChan,
     required this.controller,
   });
 
@@ -38,10 +40,11 @@ class HkPlayerState extends State<HkPlayer> {
         child: _createPlatformView(),
       ),
       onDoubleTap: () {
-        if (this._controller?.isPlaying ?? false)
+        if (this._controller?.isPlaying ?? false) {
           this._controller?.stop();
-        else
+        } else {
           this._controller?.replay();
+        }
       },
     );
   }
