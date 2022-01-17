@@ -17,14 +17,13 @@ import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.NET_DVR_PREVIEWINFO;
 
 @SuppressLint("NewApi")
-public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodChannel.MethodCallHandler, Callback {
+public class PlaySurfaceView extends SurfaceView implements PlatformView, MethodChannel.MethodCallHandler, Callback {
     private final MethodChannel channel;
     private final String TAG = "PlaySurfaceView";
     private boolean isPlaying = false;
 
     public int m_iPreviewHandle = -1;
     public boolean bCreate = false;
-
 
     public PlaySurfaceView(Context context, BinaryMessenger messenger, int id) {
         super(context);
