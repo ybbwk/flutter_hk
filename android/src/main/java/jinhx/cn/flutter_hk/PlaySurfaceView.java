@@ -55,14 +55,12 @@ public class PlaySurfaceView extends SurfaceView implements PlatformView,MethodC
 
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
-        // TODO Auto-generated method stub
         bCreate = true;
         System.out.println("surfaceCreated");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder arg0) {
-        // TODO Auto-generated method stub
         System.out.println("surfaceDestroyed");
         bCreate = false;
     }

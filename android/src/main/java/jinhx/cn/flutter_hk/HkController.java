@@ -141,8 +141,7 @@ public class HkController implements MethodChannel.MethodCallHandler {
         if (m_oNetDvrDeviceInfoV30.byChanNum > 0) {
             m_iStartChan = m_oNetDvrDeviceInfoV30.byStartChan;
             m_iChanNum = m_oNetDvrDeviceInfoV30.byChanNum;
-        }
-        else if (m_oNetDvrDeviceInfoV30.byIPChanNum > 0) {
+        } else if (m_oNetDvrDeviceInfoV30.byIPChanNum > 0) {
             m_iStartChan = m_oNetDvrDeviceInfoV30.byStartDChan;
             m_iChanNum = m_oNetDvrDeviceInfoV30.byIPChanNum + m_oNetDvrDeviceInfoV30.byHighDChanNum * 256;
         }
@@ -167,7 +166,6 @@ public class HkController implements MethodChannel.MethodCallHandler {
         Log.i(TAG, "getChans is Successful!");
         return chans;
     }
-
 
     /**
      * @fn getExceptiongCbf
