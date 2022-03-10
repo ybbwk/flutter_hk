@@ -1,7 +1,4 @@
-//import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hk/hk_controller.dart';
 import 'package:flutter_hk/hk_player.dart';
 import 'package:flutter_hk/hk_player_controller.dart';
@@ -18,21 +15,20 @@ class MyApp extends StatelessWidget {
             case "/":
               return MaterialPageRoute(
                   builder: (context) => FirstPage(), maintainState: false);
-              break;
             case "/v":
-              Map<String, Object> map = settings.arguments;
+              var map = settings.arguments as Map<String, Object?>;
               return MaterialPageRoute(
                   builder: (context) => SecondPage(map), maintainState: false);
-              break;
           }
+          return null;
         });
   }
 }
 
 class FirstPage extends StatelessWidget {
-  String ip;
+  String? ip;
   int port = 0;
-  String user, psd;
+  String? user, psd;
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
@@ -56,7 +52,7 @@ class FirstPage extends StatelessWidget {
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(10), labelText: "请输入端口"),
                   initialValue: "8000",
-                  onSaved: (v) => this.port = int.parse(v),
+                  onSaved: (v) => this.port = int.parse(v ?? '8000'),
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -73,8 +69,8 @@ class FirstPage extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.arrow_downward),
                   onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _formKey.currentState!.save();
                       Navigator.pushNamed(context, "/v", arguments: {
                         "ip": ip,
                         "port": port,
@@ -84,36 +80,38 @@ class FirstPage extends StatelessWidget {
                     }
                   },
                 ),
-                IconButton(icon: Icon(Icons.pages),
-                onPressed: (){
-                  HkController.platformVersion.then((v)=>print("output:" + v));
-                },)
+                IconButton(
+                  icon: Icon(Icons.pages),
+                  onPressed: () {
+                    HkController.platformVersion
+                        .then((v) => print("output:$v"));
+                  },
+                )
               ],
             )));
   }
 }
 
 class SecondPage extends StatefulWidget {
-  String ip;
-  int port = 0;
-  String user, psd;
+  late final String ip;
+  late final int port;
+  late final String user, psd;
 
-  SecondPage(Map<String, Object> map) {
-    ip = map["ip"];
-    port = map["port"];
-    psd = map["psd"];
-    user = map["user"];
+  SecondPage(Map<String, Object?> map) {
+    ip = map["ip"] as String;
+    port = map["port"] as int;
+    psd = map["psd"] as String;
+    user = map["user"] as String;
   }
   @override
   _SecondPageState createState() => _SecondPageState();
 }
 
 class _SecondPageState extends State<SecondPage> {
-  String _platformVersion = 'Unknown';
-  HkController hkController;
-  HkPlayerController playerController;
-  Map cameras = null;
-  String errMsg = null;
+  HkController? hkController;
+  HkPlayerController? playerController;
+  Map? cameras;
+  String? errMsg;
 
   @override
   void initState() {
@@ -124,22 +122,24 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   void dispose() {
-    this.hkController.logout();
-    this.hkController.dispose();
+    this.hkController?.logout();
+    this.hkController?.dispose();
     super.dispose();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     try {
-      hkController = HkController("hk"); // 必须要有名字，如果有多个摄像头或硬盘录像机就要定义多个
-      playerController = HkPlayerController(hkController); // 有多个播放器就要定义多个
+      // 必须要有名字，如果有多个摄像头或硬盘录像机就要定义多个
+      hkController = HkController("hk");
+      // 有多个播放器就要定义多个
+      playerController = HkPlayerController(hkController!);
 
-      await hkController.init();
-      await hkController.login(
+      await hkController!.init();
+      await hkController!.login(
           this.widget.ip, this.widget.port, this.widget.user, this.widget.psd);
 
-      var chans = await hkController.getChans();
+      var chans = await hkController!.getChans();
 
       if (!mounted) return;
 
@@ -154,19 +154,21 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   Widget buildCameras(Map cameras) {
-    var list = List<Widget>();
+    var list = <Widget>[];
     List<int> keys = List.from(cameras.keys);
     keys.sort((l, r) => l.compareTo(r));
     for (int key in keys) {
-      list.add(FlatButton(
+      list.add(TextButton(
         child: Text(cameras[key]),
-        padding: EdgeInsets.all(1),
-        color: Colors.lightBlueAccent,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.all(1),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
         onPressed: () {
-          if (this.playerController.isPlaying) {
-            this.playerController.stop();
+          if (this.playerController?.isPlaying ?? false) {
+            this.playerController?.stop();
           }
-          this.playerController.play(key);
+          this.playerController?.play(key);
         },
       ));
     }
@@ -192,18 +194,18 @@ class _SecondPageState extends State<SecondPage> {
           );
         } else {
           return Center(
-            child: Text(errMsg),
+            child: Text(errMsg!),
           );
         }
       } else {
         return Column(
           children: [
-            buildCameras(this.cameras),
+            buildCameras(this.cameras!),
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(4),
                 child: HkPlayer(
-                  controller: this.playerController,
+                  controller: this.playerController!,
                 ),
               ),
             ),

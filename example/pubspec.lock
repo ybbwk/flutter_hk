@@ -63,7 +63,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.2"
+    version: "1.0.4"
   e2e:
     dependency: "direct dev"
     description:
